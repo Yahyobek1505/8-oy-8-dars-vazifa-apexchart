@@ -1,5 +1,5 @@
-import React from 'react';
-import Data from '../Chart.json'
+import React, { useEffect, useState } from 'react';
+import data_json from '../Chart.json'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,30 +28,47 @@ export const options = {
     legend: {
       position: 'top',
     },
-    title: {
-      display: true,
-      text: 'xe.com Line Chart',
-    },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+export default function App() {
 
-function dataRandom() {
-  return Math.trunc(Math.random() * 1000)
-}
-export const data = {
+  function timeConverter(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    return time;
+  }
+
+  const [dataChart, setDataChart] = useState([])
+  useEffect(() => {
+let labels = [];
+let values = [];
+
+data_json.rates.forEach((el, index) => {
+  labels.push(timeConverter(data_json.startTime + index *  data_json.interval));
+  values.push(el);
+  console.log(el);
+});
+
+setDataChart({
   labels,
-  datasets: [
+  datasets:[
     {
-      label: 'Dataset 2',
-      data: labels.map(() => dataRandom()),
+      label: 'ex.com',
+      data: values,
       borderColor: 'rgb(53, 162, 235)',
       backgroundColor: 'rgba(53, 162, 235, 0.5)',
     },
-  ],
-};
+  ]
+})
+}, [])
 
-export default function App() {
-  return <Line options={options} data={data} />;
+  return dataChart?.labels?.length && <Line options={options} data={dataChart} />;
 }

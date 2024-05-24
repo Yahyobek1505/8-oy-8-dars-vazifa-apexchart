@@ -4,7 +4,7 @@ import Chart from './components/Chart'
 function App() {
   return (
     <>
-     <div className="container max-w-[900px] mx-auto">
+     <div className='w-[95%] mx-auto pt-10' >
      <Chart></Chart>
      </div>
     </>
